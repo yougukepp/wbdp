@@ -9,25 +9,31 @@ class WBDPSpider:
     def __init__(self, url):
         data = self.GetData(url)
         jsoner = WBDPJsoner(data)
-        self.pageMax = jsoner.GetPageMax()
-        self.pageIndex = 1
+
+        self.mPageMax = jsoner.GetPageMax()
+        self.mPageIndex = 0
+        self.mUrl = url
 
     def GetData(self, url):
         response = urllib.request.urlopen(url)
         buff = response.read()
         buff_utf8 = buff.decode('utf8')
-
         return buff_utf8
+
+
+    # 实现 len 函数
+    def __len__(self):
+        return self.mPageMax
 
     # __next__ __iter__ 用于支持迭代操作 for item in WBDPSpider
     def __next__(self): # 返回 内容
-        if self.pageIndex > self.pageMax:
+        self.mPageIndex += 1
+        if self.mPageIndex > self.mPageMax:
             raise StopIteration
 
-        self.pageIndex += 1
-
-        # TODO: 返回 第 pageIndex页
-        return self.pageMax
+        url = self.mUrl + '&page=' + str(self.mPageIndex)
+        data = self.GetData(url)
+        return data
 
     def __iter__(self):
         return self
