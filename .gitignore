@@ -1,0 +1,8 @@
+#python临时文件
+*.pyc
+
+# gdp统计结果
+backup/data.xlsx
+wbdp.db
+
+
