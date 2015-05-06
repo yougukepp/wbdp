@@ -3,6 +3,6 @@
 
 # gdp统计结果
 backup/data.xlsx
-wbdp.db
+*.db
 
 
