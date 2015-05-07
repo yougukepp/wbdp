@@ -7,7 +7,6 @@ from WBDPStorager import WBDPStorager
 #from WBDPConfiger import WBDPConfiger
 
 # TODO： 正常情况从WBDPStorager中获取数据
-
 # 初始化
 if __name__ == '__main__':
     spider = WBDPSpider()
@@ -22,5 +21,4 @@ if __name__ == '__main__':
         storager.Update(jsoner)
 
         print('%4.2f%%' % (100.0 * i / iMax))
-        break
 

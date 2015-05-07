@@ -46,13 +46,13 @@ class WBDPStorager:
         for item in jsoner:
             if None != item:
                 self.__UpdateALine__(item)
+        # 提交
+        self.mConn.commit()
 
     def __UpdateALine__(self, item): 
         # 实现数据库插入
-        print('item:', end = '')
-        print(item)
-
-        # 查询表
+        #print('item:', end = '')
+        #print(item)
         configer = WBDPConfiger()
         tableName = configer.GetTableName()
         conditions = configer.GetConditions()
@@ -60,7 +60,6 @@ class WBDPStorager:
         # 构造查找条件
         #(key, value) WBDPJsoner中构造
         keyTuple = item[0]
-        ValueTuple = item[1]
         conditionStr = 'WHERE '
         i = 0
         for c in conditions:
@@ -78,12 +77,38 @@ class WBDPStorager:
         else: # 有该项 Update
             self.__UpdateDb__(item)
 
-    def __Insert__(self, item):
-        pass
+    def __Insert__(self, item): 
+        configer = WBDPConfiger()
+        tableName = configer.GetTableName()
+        tableSimpleFormat = configer.GetTableSimpleFormat()
+
+        #(key, value) WBDPJsoner中构造
+        keyTuple = item[0]
+        valueTuple = item[1]
+        valuesStr = ''
+
+        for k in keyTuple:
+            valuesStr += "'" + k + "'" + ','
+
+        i = 0
+        for v in valueTuple:
+            if 0 != i:
+                valuesStr += ','
+            valuesStr +=  v
+            i += 1
+
+        cmdInsertTable = 'INSERT INTO ' + tableName + tableSimpleFormat + ' VALUES (' + valuesStr + ')'
+        #print(cmdInsertTable) 
+        self.mConn.execute(cmdInsertTable)
 
     def __UpdateDb__(self, item):
-        pass
+        """
+        TODO: 实现更新操作
+        """
+        print("WBDPStorager.__UpdateDb__未实现")
 
 if __name__ == '__main__':
     db = WBDPStorager()
+    data = db.__GetTableData__('value')
+    print(data)
     
