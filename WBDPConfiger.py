@@ -5,7 +5,7 @@ class WBDPConfiger:
     def __init__(self): 
         # 整体配置
         self.mDbFileName = r'storage.db'
-        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=500'
+        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=10'
         
         # storager配置
         self.mTableName = 'value '
@@ -15,6 +15,7 @@ class WBDPConfiger:
                     VALUAE          REAL                NOT NULL,
                     CONSTRAINT CI   PRIMARY KEY         (COUNTRY, YEAR, INDICATOR)
                     );"""
+        self.mConditions = ('COUNTRY', 'YEAR', 'INDICATOR')
 
         # jsoner配置
         self.mHeadIndex = 0
@@ -23,7 +24,7 @@ class WBDPConfiger:
 
         # 世行gdp数据格式
         # 双层Tuple结构
-        self.mKeyTuple = (('country', 'value',), ('indicator', 'id',), ('date',))
+        self.mKeyTuple = (('country', 'value',), ('date',), ('indicator', 'id',))
         self.mValueTuple = (('value',),)
 
     def GetDbFileName(self):
@@ -34,6 +35,9 @@ class WBDPConfiger:
 
     def GetTableFormat(self):
         return self.mTableFormat
+
+    def GetConditions(self):
+        return self.mConditions
 
     def GetUrl(self):
         return self.mUrl

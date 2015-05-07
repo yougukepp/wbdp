@@ -41,7 +41,7 @@ class WBDPJsoner:
         # 一个值
         for aKeyTuple in keyTuple:
             v = self.__ParseAValueInCotent__(content, aKeyTuple)
-            if None == v: # 空值不处理
+            if None == v or '' == v: # 空值不处理
                 return None
             rstTuple.append(v)
 
@@ -105,10 +105,15 @@ class WBDPJsoner:
         if None == k or None == v:
             return None
         else: 
-            rstDict = {}
+            rst = []
             k = tuple(k)
-            rstDict[k] = v
-            return rstDict
+            v = tuple(v)
+            rst.append(k)
+            rst.append(v)
+            rstTuple = tuple(rst)
+
+            #(key, value)
+            return rstTuple
 
     def __iter__(self):
         return self
