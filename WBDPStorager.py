@@ -2,35 +2,30 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import time
+
+from WBDPConfiger import WBDPConfiger
 
 gTableTypeInSqliteMaster = 0
 gTableNameInSqliteMaster = 1
 
-gCmdHeadCreateTable = 'CREATE TABLE '
-gTableName = 'value '
-
-gTableFormat = """(COUNTRY         TEXT                NOT NULL,
-                    YEAR            INTEGER             NOT NULL,
-                    INDICATOR       TEXT                NOT NULL,
-                    VALUAE          REAL                NOT NULL,
-                    CONSTRAINT CI   PRIMARY KEY         (COUNTRY, YEAR, INDICATOR)
-                    );"""
-
 class WBDPStorager:
-    def __init__(self, dbFileName): 
+    def __init__(self): 
+        configer = WBDPConfiger()
+        dbFileName = configer.GetDbFileName()
         self.mConn = sqlite3.connect(dbFileName)
-        tableList = self.GetTableList()
+        tableList = self.__GetTableList__()
 
         if 0 == len(tableList): # 未建表 则建表
-            print('建' + gTableName + '表...') 
-            cmdCreateTable = gCmdHeadCreateTable + gTableName + gTableFormat
+            tableName = configer.GetTableName()
+            tableFormat = configer.GetTableFormat()
+            print('建' + tableName + '表...') 
             #print(cmdCreateTable)
+            cmdCreateTable = 'CREATE TABLE ' + tableName + tableFormat
             self.mConn.execute(cmdCreateTable)
 
-    def GetTableList(self):
+    def __GetTableList__(self):
         rst  = []
-        data = self.ShowTable('sqlite_master')
+        data = self.__GetTableData__('sqlite_master')
         for item in data:
             typeStr = item[gTableTypeInSqliteMaster]
             nameStr = item[gTableNameInSqliteMaster]
@@ -39,15 +34,17 @@ class WBDPStorager:
 
         return rst
 
-    def ShowTable(self, tableName):
-        cmdStr = 'select * from ' + tableName
+    def __GetTableData__(self, tableName):
+        cmdStr = 'SELECT * FROM ' + tableName
         cursor = self.mConn.execute(cmdStr) 
         data = cursor.fetchall() 
 
         return data 
 
-    def UpdateTable(self, dataName, dataList):
-        pass
+    def Update(self, jsoner):
+        for item in jsoner:
+            print(item)
+            break
 
 if __name__ == '__main__':
     db = WBDPStorager()

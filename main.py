@@ -4,13 +4,14 @@
 from WBDPJsoner import WBDPJsoner
 from WBDPSpider import WBDPSpider
 from WBDPStorager import WBDPStorager
+#from WBDPConfiger import WBDPConfiger
 
-gDbFile = r'storage.db'
-gUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=1'
+# TODO： 正常情况从WBDPStorager中获取数据
 
+# 初始化
 if __name__ == '__main__':
-    spider = WBDPSpider(gUrl)
-    db = WBDPStorager(gDbFile)
+    spider = WBDPSpider()
+    storager = WBDPStorager()
 
     i = 0
     iMax = len(spider)
@@ -18,13 +19,8 @@ if __name__ == '__main__':
     for item in spider:
         i += 1
         jsoner = WBDPJsoner(item)
+        storager.Update(jsoner)
 
-        keyTuple = (('country', 'value',), ('indicator', 'id',), ('data',))
-        valueTuple = (('data',),)
+        print('%4.2f%%' % (100.0 * i / iMax))
+        break
 
-        jsoner.ToDict(keyTuple, valueTuple)
-
-        #print(jsoner.GetContent())
-        #db.update(jsoner)
-        #print('%4.2f%%' % (100.0 * i / iMax))
-    

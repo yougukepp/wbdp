@@ -4,22 +4,22 @@
 import urllib.request
 
 from WBDPJsoner import WBDPJsoner
+from WBDPConfiger import WBDPConfiger
 
 class WBDPSpider:
-    def __init__(self, url):
-        data = self.GetData(url)
+    def __init__(self): 
+        configer = WBDPConfiger()
+        self.mUrl = configer.GetUrl()
+        data = self.__GetData__(self.mUrl)
         jsoner = WBDPJsoner(data)
-
-        self.mPageMax = jsoner.GetPageMax()
+        self.mPageMax = jsoner.__GetPageMax__()
         self.mPageIndex = 0
-        self.mUrl = url
 
-    def GetData(self, url):
+    def __GetData__(self, url):
         response = urllib.request.urlopen(url)
         buff = response.read()
         buff_utf8 = buff.decode('utf8')
         return buff_utf8
-
 
     # 实现 len 函数
     def __len__(self):
@@ -32,7 +32,7 @@ class WBDPSpider:
             raise StopIteration
 
         url = self.mUrl + '&page=' + str(self.mPageIndex)
-        data = self.GetData(url)
+        data = self.__GetData__(url)
         return data
 
     def __iter__(self):
