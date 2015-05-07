@@ -43,8 +43,10 @@ class WBDPStorager:
 
     def Update(self, jsoner):
         for item in jsoner:
-            print(item)
-            break
+            if None != item:
+                # 实现数据库插入
+                print(item)
+                pass
 
 if __name__ == '__main__':
     db = WBDPStorager()

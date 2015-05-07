@@ -22,5 +22,4 @@ if __name__ == '__main__':
         storager.Update(jsoner)
 
         print('%4.2f%%' % (100.0 * i / iMax))
-        break
 

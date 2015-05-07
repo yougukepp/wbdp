@@ -5,7 +5,7 @@ class WBDPConfiger:
     def __init__(self): 
         # 整体配置
         self.mDbFileName = r'storage.db'
-        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=3' 
+        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=500'
         
         # storager配置
         self.mTableName = 'value '
@@ -22,8 +22,9 @@ class WBDPConfiger:
         self.mPageMaxKey = 'pages'
 
         # 世行gdp数据格式
-        self.mKeyTuple = (('country', 'value',), ('indicator', 'id',), ('data',))
-        self.mValueTuple = (('data',),)
+        # 双层Tuple结构
+        self.mKeyTuple = (('country', 'value',), ('indicator', 'id',), ('date',))
+        self.mValueTuple = (('value',),)
 
     def GetDbFileName(self):
         return self.mDbFileName

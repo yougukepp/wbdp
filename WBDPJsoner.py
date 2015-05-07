@@ -36,18 +36,46 @@ class WBDPJsoner:
         content = self.mData[contentIndex]
         return content
 
-    def __ParseKeyInContent__(self):
-        configer = WBDPConfiger()
-        content = self.mContent
+    def __ParseAContent__(self, content, keyTuple):
+        rstTuple = []
+        # 一个值
+        for aKeyTuple in keyTuple:
+            v = self.__ParseAValueInCotent__(content, aKeyTuple)
+            if None == v: # 空值不处理
+                return None
+            rstTuple.append(v)
 
-        keyTuple = configer.GetKeyTuple()
-        print(keyTuple)
+        return rstTuple
 
-    def __ParseValueInContent__(self):
-        configer = WBDPConfiger()
-        content = self.mContent
+    def __ParseAValueInCotent__(self, content, aKeyTuple):
+        """
+        content 为一项数据项目
+        aKeyTuple 为某个值的键值的Tuple
+        例如:
 
-        valueTuple = configer.GetValueTuple()
+        content 为 {'date': '1962', 
+                    'country': {'id': '1A', 'value': '阿拉伯联盟国家'}, 
+                    'indicator': {'id': 'NY.GDP.MKTP.CD', 
+                    'value': 'GDP（现价美元）'}, 
+                    'decimal': '1',
+                    'value': None}
+        
+        aKeyTuple 为 ('country', 'value')
+
+        那么返回:阿拉伯联盟国家
+        """
+        #print(content)
+        #print(aKeyTuple)
+
+        v = content
+        for aKey in aKeyTuple: # 一级级找
+            v = v[aKey]
+            #print(aKey)
+            #print(v)
+            #print()
+            #break
+        #print(v)
+        return v
 
     # 实现 len 函数
     def __len__(self):
@@ -58,15 +86,29 @@ class WBDPJsoner:
     def __next__(self): # 返回 内容
         if self.mContentIndexMax == self.mContentIndex:
             raise StopIteration
+        content = self.mContent[self.mContentIndex]
+
+        configer = WBDPConfiger()
+        keyTuple = configer.GetKeyTuple()
+
+        k = self.__ParseAContent__(content, keyTuple)
+        #print(k)
+
+        keyTuple = configer.GetValueTuple()
+        v = self.__ParseAContent__(content, keyTuple)
+        #print(v)
+        #print()
+
         self.mContentIndex+= 1
 
-        k = self.__ParseKeyInContent__()
-        v = self.__ParseValueInContent__()
-
-        rst = {}
-        rst[k] = v
-
-        return rst
+        # 空值不处理
+        if None == k or None == v:
+            return None
+        else: 
+            rstDict = {}
+            k = tuple(k)
+            rstDict[k] = v
+            return rstDict
 
     def __iter__(self):
         return self
