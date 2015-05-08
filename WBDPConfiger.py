@@ -8,6 +8,12 @@ class WBDPConfiger:
         # main配置
         self.mCfgFileName = r'wbdp.cfg'
 
+        # Qt设置
+        self.mWidthMargin = 0
+        self.mHeightMargin = 0
+        self.mYearFieldName = 'YEAR'
+        self.mCountryFieldName = 'COUNTRY'
+
         # spider配置
         self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=2000'
         
@@ -66,6 +72,18 @@ class WBDPConfiger:
         f.close
 
         #print('SetInitFlag')
+
+    def GetWidthMargin(self):
+        return self.mWidthMargin
+
+    def GetHeightMargin(self):
+        return self.mHeightMargin
+
+    def GetYearFieldName(self):
+        return self.mYearFieldName
+
+    def GetCountryFieldName(self):
+        return self.mCountryFieldName
 
     def GetDbFileName(self):
         return self.mDbFileName

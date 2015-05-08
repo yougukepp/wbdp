@@ -23,9 +23,17 @@ class WBDPStorager:
             cmdCreateTable = 'CREATE TABLE ' + tableName + tableFormat
             self.mConn.execute(cmdCreateTable)
 
+    def GetData(self, tableName, fieldName = '*', condition = ''):
+        cmdStr = 'SELECT ' + fieldName + ' FROM ' + tableName + condition
+        #print(cmdStr)
+        cursor = self.mConn.execute(cmdStr) 
+        data = cursor.fetchall() 
+
+        return data 
+
     def __GetTableList__(self):
         rst  = []
-        data = self.__GetTableData__('sqlite_master')
+        data = self.GetData('sqlite_master')
         for item in data:
             typeStr = item[gTableTypeInSqliteMaster]
             nameStr = item[gTableNameInSqliteMaster]
@@ -33,14 +41,6 @@ class WBDPStorager:
                 rst.append(nameStr)
 
         return rst
-
-    def __GetTableData__(self, tableName, condition = ''):
-        cmdStr = 'SELECT * FROM ' + tableName + condition
-        #print(cmdStr)
-        cursor = self.mConn.execute(cmdStr) 
-        data = cursor.fetchall() 
-
-        return data 
 
     def Update(self, jsoner):
         for item in jsoner:
@@ -70,7 +70,7 @@ class WBDPStorager:
             i += 1
         #print(conditionStr)
 
-        data = self.__GetTableData__(tableName, conditionStr)
+        data = self.GetData(tableName, fieldName = '*', condition = conditionStr)
 
         if 0 == len(data): # 无该项 Insert
             self.__Insert__(item)
@@ -107,8 +107,11 @@ class WBDPStorager:
         """
         print("WBDPStorager.__UpdateDb__未实现")
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
+    configer = WBDPConfiger()
+    tableName = configer.GetTableName()
+
     db = WBDPStorager()
-    data = db.__GetTableData__('value')
+    data = db.GetData(tableName)
     print(data)
     
