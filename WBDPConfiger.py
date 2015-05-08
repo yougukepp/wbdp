@@ -28,6 +28,7 @@ class WBDPConfiger:
                     );"""
         self.mTableSimpleFormat = "(COUNTRY, YEAR, INDICATOR, VALUAE)"
         self.mConditions = ('COUNTRY', 'YEAR', 'INDICATOR')
+        self.mArea = ('世界', '东亚与太平洋', '东亚与太平洋地区（所有收入水平）', '中东&北非', '中东与北非地区（所有收入水平）', '中低收入国家', '中低等收入国家', '中等收入国家', '中高等收入国家', '低收入国家', '小国', '撒哈拉以南非洲', '撒哈拉以南非洲地区（所有收入水平）', '最不发达国家：联合国分类', '欧洲与中亚地区（所有收入水平）', '欧洲和中亚', '欧洲联盟', '欧洲货币联盟', '重债穷国 (HIPC)', '高收入国家', '高收入经合组织国家', '高收入非经合组织国家')
 
         # jsoner配置
         self.mHeadIndex = 0
@@ -98,7 +99,10 @@ class WBDPConfiger:
         return self.mTableSimpleFormat
 
     def GetConditions(self):
-        return self.mConditions
+        return self.mConditions 
+    
+    def GetArea(self):
+        return self.mArea
 
     def GetUrl(self):
         return self.mUrl

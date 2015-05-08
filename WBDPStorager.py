@@ -57,6 +57,12 @@ class WBDPStorager:
         tableName = configer.GetTableName()
         conditions = configer.GetConditions()
 
+        # 地区数据不入数据库
+        area = configer.GetArea()
+        country = item[0][0] #WBDPJsoner中构造
+        if country in area:
+            return
+
         # 构造查找条件
         #(key, value) WBDPJsoner中构造
         keyTuple = item[0]

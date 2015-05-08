@@ -22,7 +22,8 @@ class BaseCanvas(QWidget):
         # 获取 countries
         configer = WBDPConfiger()
         self.mAllCountries = self.GetYearOrCountry(configer.GetCountryFieldName())
-        #print(self.mAllCountries)
+
+        # 获取 最新 10强 国家
 
     def GetYearOrCountry(self, fieldName):
         rst = []
@@ -58,14 +59,12 @@ class BaseCanvas(QWidget):
         painter = QPainter(self)
         painter.fillRect(x0, y0, x1, y1, QColor(0, 0, 0))
 
-
-
         # 绘制横坐标 year
         pen = QPen(QColor(0, 255, 0))
         pen.setWidth(1)
         painter.setPen(pen) 
         
-        x = 10
+        x = 30
         y = self.height() - 2 # 经验值
         for year in self.mAllYears:
             labelStr = str(year)[2] + str(year)[3]
@@ -74,12 +73,13 @@ class BaseCanvas(QWidget):
             x += 25 # 经验值
             
         # 经验值
-        x0 = 10
+        x0 = 30
         y -= 18
         painter.drawLine(x0, y, x, y)
 
+        y1 = 10
         # 绘制纵坐标
-        painter.drawLine(x0, y, x, y)
+        painter.drawLine(x0, y, x0, y1)
 
         painter.end()
 
