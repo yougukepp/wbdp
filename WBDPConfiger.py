@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+
 class WBDPConfiger: 
     def __init__(self): 
-        # 整体配置
-        self.mDbFileName = r'storage.db'
-        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=500'
+        # main配置
+        self.mCfgFileName = r'wbdp.cfg'
+
+        # spider配置
+        self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=2000'
         
         # storager配置
+        self.mDbFileName = r'storage.db'
         self.mTableName = 'value '
         self.mTableFormat = """(COUNTRY         TEXT                NOT NULL,
                     YEAR            INTEGER             NOT NULL,
@@ -27,6 +32,40 @@ class WBDPConfiger:
         # 双层Tuple结构
         self.mKeyTuple = (('country', 'value',), ('date',), ('indicator', 'id',))
         self.mValueTuple = (('value',),)
+
+    def HasInitted(self):
+        Initted = False
+
+        cfgFileName = self.mCfgFileName
+
+        # 文件都不存在 显然没有初始化
+        if not os.path.isfile(cfgFileName):
+            return False
+
+        f = open(cfgFileName, 'r')
+
+        text = f.read()
+        #print(text)
+
+        if 0 == len(text):
+            Initted = False
+        else:
+            Initted = True
+        f.close()
+
+        #print('HasInitted:', end = '')
+        #print(Initted)
+
+        return Initted
+
+    def SetInitFlag(self):
+        cfgFileName = self.mCfgFileName
+
+        f = open(cfgFileName, 'w')
+        f.write('initted')
+        f.close
+
+        #print('SetInitFlag')
 
     def GetDbFileName(self):
         return self.mDbFileName
@@ -62,6 +101,9 @@ class WBDPConfiger:
         return self.mValueTuple
 
     def Show(self):
+        """
+        完善打印
+        """
         print('DbFile:'       + self.mDbFileName)
         print('Url:'          + self.mUrl)
         print('TableName:'    + self.mTableName)

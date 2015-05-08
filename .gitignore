@@ -1,8 +1,11 @@
-#python临时文件
+# python临时文件
 *.pyc
 
 # gdp统计结果
 backup/data.xlsx
 *.db
+
+# 配置文件
+*.cfg
 
 
