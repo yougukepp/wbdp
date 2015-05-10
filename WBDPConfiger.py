@@ -3,20 +3,20 @@
 
 import os
 
-class WBDPConfiger: 
-    def __init__(self): 
+class WBDPConfiger:
+    def __init__(self):
         # main配置
         self.mCfgFileName = r'wbdp.cfg'
 
         # Qt设置
-        self.mWidthMargin = 0
-        self.mHeightMargin = 0
+        self.mWidthMargin = 0.05
+        self.mHeightMargin = 0.05
         self.mYearFieldName = 'YEAR'
         self.mCountryFieldName = 'COUNTRY'
 
         # spider配置
         self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=2000'
-        
+
         # storager配置
         self.mDbFileName = r'storage.db'
         self.mTableName = 'value '
@@ -95,12 +95,12 @@ class WBDPConfiger:
     def GetTableFormat(self):
         return self.mTableFormat
 
-    def GetTableSimpleFormat(self): 
+    def GetTableSimpleFormat(self):
         return self.mTableSimpleFormat
 
     def GetConditions(self):
-        return self.mConditions 
-    
+        return self.mConditions
+
     def GetArea(self):
         return self.mArea
 

@@ -14,13 +14,15 @@ class BaseCanvas(QWidget):
         self.setMouseTracking(True)
         self.mStorager = WBDPStorager() 
 
-        # 获取 years
+        self.mCanvas = {}
+
         configer = WBDPConfiger()
+
+        # 获取 years
         self.mAllYears = self.GetYearOrCountry(configer.GetYearFieldName())
         #print(self.mAllYears)
 
         # 获取 countries
-        configer = WBDPConfiger()
         self.mAllCountries = self.GetYearOrCountry(configer.GetCountryFieldName())
 
         # 获取 最新 10强 国家
@@ -42,44 +44,120 @@ class BaseCanvas(QWidget):
         rst = sorted(rst)
 
         return tuple(rst)
-        
-    def DrawLabel(self, painter, point, labelStr):
+
+    def LimitInCanvasX(self, x):
+        xMin = 0
+        xMax = self.width()
+
+        # x坐标转换 加上边界
+        xMargin = self.mCanvas['x'][0]
+        x = xMargin + x
+
+        # x范围限制
+        if x < xMin:
+            x = xMin 
+
+        if x> xMax:
+            x = xMax
+
+        return x
+
+    def LimitInCanvasY(self, y):
+        yMin = 0
+        yMax = self.height()
+
+        #print('ymin:%d,yMax:%d' % (yMin, yMax))
+        #print('y:%d =>' % y, end='')
+
+        # y坐标转换
+        # qt原点在左上角 笛卡尔坐标系原点在左下角
+        # 另外在加上边界
+        yMargin = self.mCanvas['y'][0]
+        yMarginMax = self.mCanvas['y'][1]
+        y = yMargin + yMarginMax - y
+
+        # y范围限制
+        if y < yMin:
+            y = yMin
+
+        if y > yMax:
+            y = yMax
+
+        #print(y)
+
+        #print('yMargin:%d,yMarginMax:%d' % (yMargin, yMarginMax))
+
+        return y
+
+    def DrawLabel(self, painter, x, y, labelStr):
+        # 笛卡尔 => Qt坐标系
+        #print('(%d,%d)=>' % (x, y), end='')
+        x = self.LimitInCanvasX(x)
+        y = self.LimitInCanvasY(y)
+        #print('(%d,%d)' % (x, y))
+        point = QPoint(x, y) 
         painter.drawText(point, labelStr)
 
+    def DrawLine(self, painter, x0, y0, x1, y1):
+        """
+        笛卡尔坐标系绘图
+        """
+        #print('(%d, %d) => (%d, %d)' % (x0,y0,x1,y1))
+
+        # TODO:范围限定于 Widget内
+        x0 = self.LimitInCanvasX(x0)
+        x1 = self.LimitInCanvasX(x1)
+        y0 = self.LimitInCanvasY(y0)
+        y1 = self.LimitInCanvasY(y1)
+        #print('(%d, %d) => (%d, %d)' % (x0,y0,x1,y1))
+
+        painter.drawLine(x0, y0, x1, y1)
+
     def paintEvent(self, event):
+
         configer = WBDPConfiger()
+        width = self.width()
+        height = self.height()
+
+        # 绘图边界
+        xMargin = configer.GetWidthMargin() * width
+        yMargin = configer.GetHeightMargin() * height
+        xMin = int(xMargin)
+        yMin = int(yMargin)
+        xMax = int(width - 2 * xMin)
+        yMax = int(height - 2 * yMin)
+        self.mCanvas = { 'x':(xMin, xMax), 'y':(yMin, yMax) }
+        #print('(%d,%d)' % (width, height))
+        #print(self.mCanvas)
 
         # 清屏
-        widthMargin = configer.GetWidthMargin() * self.width()
-        heightMargin = configer.GetHeightMargin() * self.height()
-        x0 = widthMargin
-        y0 = heightMargin
-        x1 = self.width() - 2 * x0
-        y1 = self.height() - 2 * y0
         painter = QPainter(self)
-        painter.fillRect(x0, y0, x1, y1, QColor(0, 0, 0))
+        painter.fillRect(0, 0, width, height, QColor(0, 0, 0)) #涂黑
 
         # 绘制横坐标 year
         pen = QPen(QColor(0, 255, 0))
         pen.setWidth(1)
         painter.setPen(pen) 
-        
-        x = 30
-        y = self.height() - 2 # 经验值
-        for year in self.mAllYears:
-            labelStr = str(year)[2] + str(year)[3]
-            point = QPoint(x, y)
-            self.DrawLabel(painter, point, labelStr)
-            x += 25 # 经验值
-            
-        # 经验值
-        x0 = 30
-        y -= 18
-        painter.drawLine(x0, y, x, y)
 
-        y1 = 10
+        xMax = self.mCanvas['x'][1]
+        self.DrawLine(painter, 0, 0, xMax, 0)
+
         # 绘制纵坐标
-        painter.drawLine(x0, y, x0, y1)
+        yMax = self.mCanvas['y'][1]
+        self.DrawLine(painter, 0, 0, 0, yMax)
+
+        # 坐标 标签
+        y = -15
+        yearLen = len(self.mAllYears)
+        xStep = (self.mCanvas['x'][1] - self.mCanvas['x'][0]) / yearLen
+        xNow = 0
+        for year in self.mAllYears:
+            #print('begin')
+            labelStr = str(year)[2] + str(year)[3] 
+            print('(%f,%d)' % (xNow, y))
+            self.DrawLabel(painter, xNow, y, labelStr)
+            xNow += xStep
+            #print('end')
 
         painter.end()
 
