@@ -31,6 +31,20 @@ class WBDPStorager:
 
         return data 
 
+    def __GetDataDesc__(self): 
+        '''
+        仅实现 GDP排序
+        '''
+        configer = WBDPConfiger()
+
+        tableName = configer.GetTableName()
+        fieldName = 'COUNTRY, VALUAE'
+        conditionStr = "WHERE YEAR = '2013' ORDER BY VALUAE DESC" 
+        
+        data = self.GetData(tableName, fieldName, conditionStr)
+
+        return data
+
     def __GetTableList__(self):
         rst  = []
         data = self.GetData('sqlite_master')
@@ -114,10 +128,8 @@ class WBDPStorager:
         print("WBDPStorager.__UpdateDb__未实现")
 
 if __name__ == '__main__': 
-    configer = WBDPConfiger()
-    tableName = configer.GetTableName()
-
     db = WBDPStorager()
-    data = db.GetData(tableName)
-    print(data)
+    data = db.__GetDataDesc__()
+    for d in data:
+        print(d)
     

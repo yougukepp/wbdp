@@ -25,7 +25,13 @@ class BaseCanvas(QWidget):
         # 获取 countries
         self.mAllCountries = self.GetYearOrCountry(configer.GetCountryFieldName())
 
-        # 获取 最新 10强 国家
+        # 获取 最新 10强 国家 
+        data = self.mStorager.__GetDataDesc__()
+        self.mTopTenCountries = []
+        for i in range(0,10):
+            self.mTopTenCountries.append(data[i][0])
+
+        print(self.mTopTenCountries)
 
     def GetYearOrCountry(self, fieldName):
         rst = []
@@ -154,7 +160,7 @@ class BaseCanvas(QWidget):
         for year in self.mAllYears:
             #print('begin')
             labelStr = str(year)[2] + str(year)[3] 
-            print('(%f,%d)' % (xNow, y))
+            #print('(%f,%d)' % (xNow, y))
             self.DrawLabel(painter, xNow, y, labelStr)
             xNow += xStep
             #print('end')
