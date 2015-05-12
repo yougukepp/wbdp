@@ -25,13 +25,22 @@ class BaseCanvas(QWidget):
         # 获取 countries
         self.mAllCountries = self.GetYearOrCountry(configer.GetCountryFieldName())
 
-        # 获取 最新 10强 国家 
-        data = self.mStorager.__GetDataDesc__()
-        self.mTopTenCountries = []
+        # 获取 最新 10强 国家 数据
+        data = self.mStorager.GetDataDesc()
+        self.mTopTenCountriesData = {}
         for i in range(0,10):
-            self.mTopTenCountries.append(data[i][0])
+            country = data[i][0]
+            k = country
+            vTupleList = self.mStorager.GetDataOfACountry(country)
+            v = []
+            for d in vTupleList:
+                v.append(d[1])
+            self.mTopTenCountriesData[k] = v
 
-        print(self.mTopTenCountries)
+        for k in self.mTopTenCountriesData:
+            data = self.mTopTenCountriesData
+            print(k)
+            print(data[k])
 
     def GetYearOrCountry(self, fieldName):
         rst = []
@@ -165,7 +174,40 @@ class BaseCanvas(QWidget):
             xNow += xStep
             #print('end')
 
+        # 绘制中国数据
+        maxValue = self.GetMaxValue()
+        minValue = self.GetMinValue()
+        #self.mTopTenCountriesData
+
+        # 比率
+        rate = 1.0 * (maxValue - minValue) / (self.mCanvas['y'][1] - self.mCanvas['y'][0])
+        print(rate)
+
         painter.end()
+
+    def GetMaxValue(self):
+        data = self.mTopTenCountriesData
+
+        vMax = 0
+        for countryData in data:
+            for aData in data[countryData]:
+                if vMax < aData:
+                    vMax = aData
+
+        return vMax
+
+    def GetMinValue(self):
+        data = self.mTopTenCountriesData
+
+        vMin = 10**100
+        for countryData in data:
+            for aData in data[countryData]:
+                if vMin > aData:
+                    vMin = aData
+
+        return vMin
+
+
 
 if __name__ == "__main__":
     import sys

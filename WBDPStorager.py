@@ -31,7 +31,19 @@ class WBDPStorager:
 
         return data 
 
-    def __GetDataDesc__(self): 
+    def GetDataOfACountry(self, country):
+        configer = WBDPConfiger()
+        tableName = configer.GetTableName()
+
+        # TODO: 移入WBDPConfiger
+        fieldName = 'YEAR, VALUAE'
+        conditionStr = "WHERE COUNTRY = '" + country + "' ORDER BY YEAR ASC" 
+
+        data = self.GetData(tableName, fieldName, conditionStr)
+
+        return data
+
+    def GetDataDesc(self): 
         '''
         仅实现 GDP排序
         '''
