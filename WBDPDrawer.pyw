@@ -104,6 +104,11 @@ class BaseCanvas(QWidget):
 
         return y
 
+    def DrawPoint(self, painter, x, y):
+        x = self.LimitInCanvasX(x)
+        y = self.LimitInCanvasY(y)
+        painter.drawPoint(x, y)
+
     def DrawLabel(self, painter, x, y, labelStr):
         # 笛卡尔 => Qt坐标系
         #print('(%d,%d)=>' % (x, y), end='')
@@ -174,16 +179,36 @@ class BaseCanvas(QWidget):
             xNow += xStep
             #print('end')
 
+        #self.mTopTenCountriesData
+
+        xNow = 0
+        for value in self.mTopTenCountriesData['中国']:
+        #for value in self.mTopTenCountriesData['美国']:
+            # 转换
+            y = self.StoragerToCanvas(value)
+            print(('%f=>%f') %(value, y))
+            # 绘制 
+            
+            pen = QPen(QColor(255, 255, 255))
+            pen.setWidth(2)
+            painter.setPen(pen) 
+
+            self.DrawPoint(painter, xNow, y)
+            xNow += xStep
+
+        painter.end()
+
+    def StoragerToCanvas(self, data):
         # 绘制中国数据
         maxValue = self.GetMaxValue()
         minValue = self.GetMinValue()
-        #self.mTopTenCountriesData
+        yMin = self.mCanvas['y'][0]
+        yMax = self.mCanvas['y'][1]
 
-        # 比率
-        rate = 1.0 * (maxValue - minValue) / (self.mCanvas['y'][1] - self.mCanvas['y'][0])
-        print(rate)
+        rst = 1.0 * (yMax - yMin) / (maxValue - minValue) * (data - minValue) + yMin
 
-        painter.end()
+        return rst
+
 
     def GetMaxValue(self):
         data = self.mTopTenCountriesData
