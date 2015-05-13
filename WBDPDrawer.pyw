@@ -39,8 +39,8 @@ class BaseCanvas(QWidget):
 
         for k in self.mTopTenCountriesData:
             data = self.mTopTenCountriesData
-            print(k)
-            print(data[k])
+            #print(k)
+            #print(data[k])
 
     def GetYearOrCountry(self, fieldName):
         rst = []
@@ -181,20 +181,49 @@ class BaseCanvas(QWidget):
 
         #self.mTopTenCountriesData
 
-        xNow = 0
-        for value in self.mTopTenCountriesData['中国']:
-        #for value in self.mTopTenCountriesData['美国']:
+        colors = configer.GetColors()
+        topTenCountriesData = self.mTopTenCountriesData
+        index = 0
+        for country in topTenCountriesData:
+            data = topTenCountriesData[country] 
+
+            # 设置颜色 点宽
+            red = colors[index][0]
+            green = colors[index][1]
+            blue = colors[index][2]
+            pen = QPen(QColor(red, green, blue))
+            pen.setWidth(2)
+            painter.setPen(pen) 
+            
+            xNow = 0
+            # 绘制点 
+            # TODO: 改为绘制线 点不明显
+            for value in data: 
+                y = self.StoragerToCanvas(value)
+                self.DrawPoint(painter, xNow, y)
+                xNow += xStep
+
+            index += 1
+        """
+        #for value in self.mTopTenCountriesData['中国']:
+        for value in self.mTopTenCountriesData['美国']:
             # 转换
             y = self.StoragerToCanvas(value)
             print(('%f=>%f') %(value, y))
             # 绘制 
             
-            pen = QPen(QColor(255, 255, 255))
+            red = colors[i][0]
+            green = colors[i][1]
+            blue = colors[i][2]
+
+            pen = QPen(QColor(red, green, blue))
             pen.setWidth(2)
             painter.setPen(pen) 
 
             self.DrawPoint(painter, xNow, y)
             xNow += xStep
+            index += 1
+        """
 
         painter.end()
 

@@ -13,6 +13,16 @@ class WBDPConfiger:
         self.mHeightMargin = 0.05
         self.mYearFieldName = 'YEAR'
         self.mCountryFieldName = 'COUNTRY'
+        self.mColors = ((255, 255, 255),
+                        (255,   0,   0),
+                        (170,   0,   0),
+                        ( 85,   0,   0),
+                        (  0, 255,   0),
+                        (  0, 170,   0),
+                        (  0,  85,   0),
+                        (  0,   0, 255),
+                        (  0,   0, 170),
+                        (  0,   0,  85))
 
         # spider配置
         self.mUrl = r'http://api.worldbank.org/zh/countries/all/indicators/NY.GDP.MKTP.CD?format=json&per_page=2000'
@@ -85,6 +95,9 @@ class WBDPConfiger:
 
     def GetCountryFieldName(self):
         return self.mCountryFieldName
+
+    def GetColors(self):
+        return self.mColors
 
     def GetDbFileName(self):
         return self.mDbFileName
